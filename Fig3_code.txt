@@ -1,0 +1,99 @@
+# This script is used to draw Figure 3
+# Import the relevant libraries
+import pandas as pd
+import numpy as np
+from plotnine import * 
+import matplotlib.pyplot as plt
+import matplotlib
+import matplotlib.patches as mpathes
+matplotlib.rcParams['xtick.direction'] = 'in' 
+matplotlib.rcParams['ytick.direction'] = 'in' 
+plt.rcParams['font.sans-serif'] = 'Arial'
+
+#%% Figure 3a is drawn
+data = pd.read_excel('Fig3_data.xlsx',sheet_name='fig3a')
+
+type1='Arctic snow'
+type2='ZSS PHg'
+type3='GWS TGM'
+type4='Arctic tundra '
+type5='Antarctic moss'
+type6='Antarctic sediment'
+type7='Volcanic condensates'
+type8='Volcanic Hg(II)p'
+type9='Volcanic Hg(0)g'
+
+fig=plt.figure(figsize=(10,16))
+ax1=fig.add_subplot(211)
+ax1.axhline(y=0, xmin=0, xmax=1,ls='--',color='grey',zorder=0)
+ax1.axvline(x=0, ymin=0, ymax=1,ls='--',color='grey',zorder=0)
+ax1.scatter(data[data['Type']==type1].iloc[:,0],data[data['Type']==type1].iloc[:,1],color='#046ebd',edgecolor='black',marker='^',s=150,label=type1,zorder=1)
+ax1.scatter(data[data['Type']==type2].iloc[:,0],data[data['Type']==type2].iloc[:,1],color='#046ebd',edgecolor='black',marker='s',s=150,label=type2,zorder=1)
+ax1.scatter(data[data['Type']==type3].iloc[:,0],data[data['Type']==type3].iloc[:,1],color='#046ebd',edgecolor='black',marker='D',s=150,label=type3,zorder=1)
+ax1.scatter(data[data['Type']==type4].iloc[:,0],data[data['Type']==type4].iloc[:,1],color='#0e813b',edgecolor='black',marker='s',s=150,label=type4,zorder=1)
+ax1.scatter(data[data['Type']==type5].iloc[:,0],data[data['Type']==type5].iloc[:,1],color='#0e813b',edgecolor='black',marker='^',s=150,label=type5,zorder=1)
+ax1.scatter(data[data['Type']==type6].iloc[:,0],data[data['Type']==type6].iloc[:,1],color='#904096',edgecolor='black',marker='^',s=150,label=type6,zorder=1)
+ax1.scatter(data[data['Type']==type7].iloc[:,0],data[data['Type']==type7].iloc[:,1],color='#904096',edgecolor='black',marker='s',s=150,label=type7,zorder=1)
+ax1.scatter(data[data['Type']==type8].iloc[:,0],data[data['Type']==type8].iloc[:,1],color='#904096',edgecolor='black',marker='D',s=150,label=type8,zorder=1)
+ax1.scatter(data[data['Type']==type9].iloc[:,0],data[data['Type']==type9].iloc[:,1],color='#904096',edgecolor='black',marker='+',s=200,label=type9,zorder=1)
+ax1.legend(bbox_to_anchor=(0.34,0.52),fontsize=13,frameon=True,facecolor='white')
+ax1.text(-2.8,0.55,'a',fontsize=24,fontweight='bold')
+
+ax1.tick_params(labelsize=15,bottom=True,top=True,which='major',length=6,labelbottom=True,labeltop=False)
+ax1.set_ylim(-5.5,0.7)
+ax1.set_xlim(-3.0,4)
+ax1.set_xticks([-3,-2,-1,0,1,2,3,4])
+ax1.set_yticks([-5,-4,-3,-2,-1,0,1])
+ax1.set_xticklabels(['-3.0','-2.0','-1.0','0','1.0','2.0','3.0','4.0'],fontsize=15)
+ax1.set_yticklabels(['-5.0','-4.0','-3.0','-2.0','-1.0','0','1.0'], fontsize=15)
+ax1.set_xlabel('$\mathregular{\delta^{202}Hg \ (‰)}$',fontsize=18) 
+ax1.set_ylabel('$\mathregular{\Delta^{199}Hg \ (‰)}$',fontsize=18) 
+
+#%% Figure 3b is drawn
+df = pd.read_excel('Fig3_data.xlsx',sheet_name='fig3b')
+
+Type1='Deep ocean fish'
+Type2='pilot whale'
+Type3='Seal feces dominated sediments'
+Type4='Modern seal feces'
+Type5='Period II (This study)'
+Type6='Period I (This study)'
+
+ax2=fig.add_subplot(212)
+ax2.axhline(y=0, xmin=0, xmax=1,ls='--',color='grey',zorder=0)
+ax2.axvline(x=0, ymin=0, ymax=1,ls='--',color='grey',zorder=0)
+ax2.scatter(df[df['Type']==Type1].iloc[:,0],df[df['Type']==Type1].iloc[:,1],color='#ec9ec6',edgecolor='black',marker='^',s=150,label='North Pacific fish',zorder=1)
+ax2.scatter(df[df['Type']==Type2].iloc[:,0],df[df['Type']==Type2].iloc[:,1],color='#d25a1c',edgecolor='black',marker='s',s=150,label=Type2,zorder=1)
+ax2.scatter(df[df['Type']==Type3].iloc[:,0],df[df['Type']==Type3].iloc[:,1],color='#904096',edgecolor='black',marker='D',s=150,label=Type3,zorder=1)
+ax2.scatter(df[df['Type']==Type4].iloc[:,0],df[df['Type']==Type4].iloc[:,1],color='#904096',edgecolor='black',marker='x',s=150,label=Type4,zorder=1)
+ax2.scatter(df[df['Type']==Type5].iloc[:,0],df[df['Type']==Type5].iloc[:,1],color='red',edgecolor='black',marker='o',s=150,label=Type5)
+ax2.scatter(df[df['Type']==Type6].iloc[:,0],df[df['Type']==Type6].iloc[:,1],color='grey',edgecolor='black',marker='o',s=150,label=type10,zorder=1)
+ax2.legend(bbox_to_anchor=(0.55,0.088),fontsize=13,frameon=True,facecolor='white')
+
+ax2.set_xlim(-1.5,2.5)
+ax2.set_ylim(-0.2,2.65)
+ax2.set_xticks([-1.5,-1,-0.5,0,0.5,1,1.5,2.0,2.5])
+ax2.set_yticks([0.0,0.5,1.0,1.5,2.0,2.5])
+ax2.set_xticklabels(['-1.5','-1.0','-0.5','0','0.5','1.0','1.5','2.0','2.5'],fontsize=15)
+ax2.set_yticklabels(['0','0.5','1.0','1.5','2.0','2.5'], fontsize=15)
+ax2.set_xlabel('$\mathregular{\delta^{202}Hg \ (‰)}$',fontsize=18) 
+ax2.set_ylabel('$\mathregular{\Delta^{199}Hg \ (‰)}$',fontsize=18) 
+
+xy4 = np.array([1.9,1.9])
+ellipse = mpathes.Ellipse(xy4,1.1,1.3,edgecolor='black',facecolor='none',ls='--',lw=2)
+ax2.add_patch(ellipse)
+
+xy4 = np.array([-0.65,0.16])
+ellipse = mpathes.Ellipse(xy4,1,0.7,edgecolor='black',facecolor='none',ls='--',lw=2,angle=0)
+ax2.add_patch(ellipse)
+
+ax2.text(-1.35,2.4,'b',fontsize=24,fontweight='bold')
+ax2.text(1,2.4,'200m',fontsize=20)
+ax2.text(-0.5,1.1,'600m',fontsize=20)
+ax2.annotate("",
+            xy=(1.0, 2.5),
+            xytext=(-0.2, 1.0),
+            arrowprops=dict(arrowstyle='<|-', color="black",lw=2),
+            zorder=0)
+
+plt.savefig('end_member_2.jpg',dpi=750)

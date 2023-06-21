@@ -1,0 +1,66 @@
+# This script was used to calculate trends in Antarctic sea ice 
+# concentrations (SIC) from 1979 to 2020
+# The SIC data is from Met Office Hadley Centre observations datasets 
+# https://www.metoffice.gov.uk/hadobs/hadisst/data/download.html
+
+# Import the relevant packages
+import netCDF4 as nc
+import pandas as pd
+import numpy as np
+import scipy.stats as st
+
+# Read sea ice data
+file = 'HadISST_ice.nc'
+dataset = nc.Dataset(file)
+
+lat=dataset.variables['latitude'][:]
+lon=dataset.variables['longitude'][:]
+time=dataset.variables['time'][:]
+sic=dataset.variables['sic'][:]
+
+# Data south of 45 degrees south latitude and 1979-2020 were selected
+lat_min=np.where(lat>=-90)[0]
+lat_max=np.where(lat<=-45)[0]
+lat_index=np.intersect1d(lat_min,lat_max)
+lon_min=np.where(lon>=-180)[0]
+lon_max=np.where(lon<=180)[0]
+lon_index=np.intersect1d(lon_min,lon_max)
+sic_aim=sic[-504:,lat_index[0]:(lat_index[-1]+1),lon_index[0]:(lon_index[-1]+1)]
+
+# Sea ice data are calculated as annual averages
+sic_yearly=np.zeros((42,len(lat_index),len(lon_index)))
+for i in range(42):
+    sic_yearly[i,:,:]=np.nanmean(sic_aim[(12*i):(12*i+12),:,:],axis=0)
+
+# Create a new array to store trends and p-values of sea ice change
+slope_arr=np.zeros((len(lat_index),len(lon_index)))
+p_value_arr=np.zeros((len(lat_index),len(lon_index)))
+
+# Calculate trends in sea ice concentrations
+year=np.linspace(1979,2020,42)
+for i in range(sic_aim.shape[1]):
+    for j in range(sic_aim.shape[2]):
+        sic_series=sic_yearly[:,i,j]
+        slope, intercept, r_value, p_value, std_err = st.linregress(year,sic_series)
+        slope_arr[i,j]=slope
+        p_value_arr[i,j]=p_value
+        print(slope,p_value)
+
+# Organize and export data
+slope_arr[slope_arr==0.0]=np.nan
+lon_mat,lat_mat=np.meshgrid(lon[lon_index[0]:lon_index[-1]+1],lat[lat_index[0]:lat_index[-1]+1])
+lon_aim_arr=lon_mat.reshape((45*360),)
+lat_aim_arr=lat_mat.reshape((45*360),)
+slope_aim_arr=slope_arr.reshape((45*360),)
+p_value_aim_arr=p_value_arr.reshape((45*360),)
+
+data_save=np.zeros((45*360,4))
+data_save[:,0]=lon_aim_arr
+data_save[:,1]=lat_aim_arr
+data_save[:,2]=slope_aim_arr
+data_save[:,3]=p_value_aim_arr
+data_save=pd.DataFrame(data_save)
+data_save.columns=['lon','lat','slope','pvalues']
+
+df=data_save[data_save['pvalues']<0.1]
+df.to_csv('sic_1979_2020_trend.csv')
